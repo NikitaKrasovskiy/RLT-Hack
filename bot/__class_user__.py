@@ -1,12 +1,9 @@
 class User(object):
-    _condition = 'None'
+    _condition = 'no_condition'
     _id = ''
 
     def change_condition(self, role):
-        if role == 'customer':
-            self._condition = 'customer'
-        elif role == 'provider':
-            self._condition = 'provider'
+        self._condition = role
 
     def get_condition(self):
         return self._condition

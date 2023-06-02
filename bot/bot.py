@@ -2,7 +2,6 @@ import vk_api
 import keyboard_config
 from vk_api.longpoll import VkLongPoll, VkEventType
 from __class_user__ import User
-from vk_api.keyboard import VkKeyboard
 
 # BASIC METHODS
 
@@ -22,12 +21,6 @@ def send_request_message(person_id, some_message, this_keyboard):
                                         "keyboard": this_keyboard.get_keyboard()})
 
 
-def change_user_scenario(scenario):
-    person = User()
-    person.change_condition(scenario)
-    return person
-
-
 vk_session = vk_api.VkApi(
 
     token='vk1.a.iDBLREQXWppl5hXXPCZTLiZ-evyY9F_e6hFe5A3EWlLojk30'
@@ -45,28 +38,36 @@ user = User()
 
 for event in longpool.listen():
     if event.type == VkEventType.MESSAGE_NEW:
+
         if event.to_me:
             message = event.text.lower()
             id = event.user_id
-            if (user.get_condition() == 'None') & (message == 'начать'):
+
+            if (user.get_condition() == 'no_condition') & (message == 'начать'):
                 start_dialog(id, keyboard)
                 print("start dialog with person")
-            elif (user.get_condition() == 'None') & (message == 'я - заказчик'):
-                user = change_user_scenario('customer')
+
+            elif (user.get_condition() == 'no_condition') & (message == 'я - заказчик'):
+                user.change_condition('customer')
                 keyboard = keyboard_config.customer_keyboard()
                 send_request_message(id, 'Выберите интересующую Вас категорию', keyboard)
-            elif (user.get_condition() == 'None') & (message == 'я - поставщик'):
-                user = change_user_scenario('provider')
+                print("Input into customer")
+
+            elif (user.get_condition() == 'no_condition') & (message == 'я - поставщик'):
+                user.change_condition('provider')
                 keyboard = keyboard_config.provider_keyboard()
                 send_request_message(id, 'Выберите интересующую Вас категорию', keyboard)
+                print("Input into provider")
+
             # elif message == 'я - новичок'
             #     new_scenario(id)
-            elif message == '5. Вернуться в начало':
-                user = change_user_scenario('None')
+
+            elif message == '5. вернуться в начало':
+                user.change_condition('no_condition')
                 keyboard = keyboard_config.init_keyboard()
                 send_request_message(id, 'Выберите интересующую Вас категорию', keyboard)
+                print("Back to the start menu")
+
             else:
                 send_request_message(id, 'Не могу разобрать вашу команду. Пожалуйста, повторите запрос', keyboard)
                 print('Wrong request')
-
-
