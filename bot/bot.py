@@ -7,22 +7,22 @@ from vk_api.keyboard import VkKeyboard
 # BASIC METHODS
 
 
-def start_dialog(person_id, keyboard):
+def start_dialog(person_id, this_keyboard):
     person_name = session_api.users.get(user_ids=person_id, fields="first_name")
     vk_session.method("messages.send", {"user_id": person_id,
                                         "message": f"Приветствую Вас, {person_name[0]['first_name']}. Выберите интересующую Вас категорию",
                                         "random_id": 0,
-                                        "keyboard": keyboard.get_keyboard()})
+                                        "keyboard": this_keyboard.get_keyboard()})
 
 
-def send_request_message(person_id, some_message, keyboard):
+def send_request_message(person_id, some_message, this_keyboard):
     vk_session.method("messages.send", {"user_id": person_id,
                                         "message": some_message,
                                         "random_id": 0,
-                                        "keyboard": keyboard.get_keyboard()})
+                                        "keyboard": this_keyboard.get_keyboard()})
 
 
-def change_user_scenario(id, scenario):
+def change_user_scenario(scenario):
     person = User()
     person.change_condition(scenario)
     return person
@@ -52,16 +52,21 @@ for event in longpool.listen():
                 start_dialog(id, keyboard)
                 print("start dialog with person")
             elif (user.get_condition() == 'None') & (message == 'я - заказчик'):
-                user = change_user_scenario(id, 'customer')
+                user = change_user_scenario('customer')
                 keyboard = keyboard_config.customer_keyboard()
                 send_request_message(id, 'Выберите интересующую Вас категорию', keyboard)
             elif (user.get_condition() == 'None') & (message == 'я - поставщик'):
-                user = change_user_scenario(id, 'provider')
+                user = change_user_scenario('provider')
                 keyboard = keyboard_config.provider_keyboard()
                 send_request_message(id, 'Выберите интересующую Вас категорию', keyboard)
             # elif message == 'я - новичок'
             #     new_scenario(id)
+            elif message == '5. Вернуться в начало':
+                user = change_user_scenario('None')
+                keyboard = keyboard_config.init_keyboard()
+                send_request_message(id, 'Выберите интересующую Вас категорию', keyboard)
             else:
                 send_request_message(id, 'Не могу разобрать вашу команду. Пожалуйста, повторите запрос', keyboard)
                 print('Wrong request')
+
 
