@@ -1,16 +1,36 @@
-# This is a sample Python script.
+import hashlib
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from pydantic import BaseModel
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import Column, Integer, String, Boolean
+import sqlite3
+
+# Database configuration
+SQLALCHEMY_DATABASE_URL = "sqlite:///./tests.db"
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def create_database():
+    conn = sqlite3.connect(SQLALCHEMY_DATABASE_URL[10:])
+    cursor = conn.cursor()
+    conn.commit()
+    conn.close()
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# Database models
+class Order(Base):
+    __tablename__ = "orders"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True)
+    email = Column(String, unique=True, index=True)
+    password = Column(String)
+    is_active = Column(Boolean, default=True)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+# API endpoints
+# Create database and tables if they do not exist
+create_database()
+Base.metadata.create_all(bind=engine)
