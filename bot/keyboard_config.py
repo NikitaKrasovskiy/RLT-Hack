@@ -22,7 +22,7 @@ def customer_keyboard():
     keyboard.add_line()
     keyboard.add_button('4. Мои заказы')
     keyboard.add_line()
-    keyboard.add_button('5. Вернуться в начало')
+    keyboard.add_button('Вернуться в начало')
     return keyboard
 
 
@@ -37,10 +37,34 @@ def provider_keyboard():
     keyboard.add_line()
     keyboard.add_button('4. Избранные торги')
     keyboard.add_line()
-    keyboard.add_button('5. Вернуться в начало')
+    keyboard.add_button('Вернуться в начало')
+    return keyboard
+
+
+# Возврат в начальное меню
+def back_to_the_start():
+    keyboard = VkKeyboard()
+    keyboard.add_openlink_button('Вернуться в начало')
+    return keyboard
+
+
+# Возврат в меню заказчика
+def back_to_the_customer_interface():
+    keyboard = VkKeyboard()
+    keyboard.add_button('1. Вернуться в меню заказчика')
+    keyboard.add_line()
+    keyboard.add_button('Вернуться в начало')
+    return keyboard
+
+
+# Возврат в меню поставщика
+def back_to_the_provider_interface():
+    keyboard = VkKeyboard()
+    keyboard.add_button('1. Вернуться в меню поставщика')
+    keyboard.add_line()
+    keyboard.add_button('Вернуться в начало')
     return keyboard
 
 
 def trade_filter():
     pass
-
