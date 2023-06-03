@@ -13,8 +13,8 @@ from main import OKVED, Order
 def start_dialog(person_id, this_keyboard):
     person_name = session_api.users.get(user_ids=person_id, fields="first_name")
     vk_session.method("messages.send", {"user_id": person_id,
-                                        "message": f"Приветствую Вас, {person_name[0]['first_name']}. Выберите "
-                                                   f"интересующую Вас категорию",
+                                        "message": f"Привет, {person_name[0]['first_name']}!\n"
+                                                   f"Выберите подходящую роль",
                                         "random_id": 0,
                                         "keyboard": this_keyboard.get_keyboard()})
 
@@ -93,21 +93,21 @@ for event in longpool.listen():
 
             # Возврат в начальное меню
             elif message == 'вернуться в начало':
-                keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
+                keyboard, user = body_request_message(id, 'Отлично! \nВыберите интересующую категорию',
                                                       keyboard_config.init_keyboard(), 'no_condition', user)
                 print("Back to the start menu")
 
             # Услуги РосЭлТорг
             elif message == 'что мне может понадобиться?':
-                keyboard, user = body_request_message(id, 'Выберите интересующую Вас услугу, предоставляемую Росэлторг',
+                keyboard, user = body_request_message(id, 'Рад, что Вы спросили!\nВыберите интересующую услугу, предоставляемую Росэлторг',
                                                       keyboard_config.service_keyboard(), 'serviced', user)
                 print("Input into service menu")
             elif (message == 'банковские операции') & (user.get_condition() == 'serviced'):
-                keyboard, user = body_request_message(id, 'Выберите интересующую Вас услугу, предоставляемую Росэлторг',
+                keyboard, user = body_request_message(id, 'Могу предложить следующие услуги',
                                                       keyboard_config.banking_keyboard(), 'serviced', user)
 
             elif (message == 'сопровождение') & (user.get_condition() == 'serviced'):
-                keyboard, user = body_request_message(id, 'Выберите интересующую Вас услугу, предоставляемую Росэлторг',
+                keyboard, user = body_request_message(id, 'Могу предложить следующие услуги',
                                                       keyboard_config.escort_keyboard(), 'serviced', user)
 
 # ---------------------------------------------------------------------------------------
@@ -116,25 +116,27 @@ for event in longpool.listen():
 
             # Выбор роли заказчика
             elif (user.get_condition() == 'no_condition') & (message == 'я - заказчик'):
-                keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
+                keyboard, user = body_request_message(id, 'Отлично! \nВыберите интересующую категорию',
                                                       keyboard_config.customer_and_provider_keyboard(), 'customer', user)
                 print("Input into customer!!!!!!!")
 
             # Прослойка после заказчика
             elif (user.get_condition() == 'customer') & (message in ['223-фз', '44-фз', 'фкр', 'рб']):
-                keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
+                keyboard, user = body_request_message(id, 'Подобрали для Вас:\n- руководство по созданию процедуры\n- '
+                                                          'полезные услуги',
                                                       keyboard_config.customer_keyboard(), 'customer', user)
                 print("Input into customer")
 
             # Возврат в меню заказчика после/во время размещения лота
             elif (user.get_condition() in ['customer', 'ordered']) & (message == 'вернуться в меню заказчика'):
-                keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
+                keyboard, user = body_request_message(id, 'Отлично! \nВыберите интересующую категорию',
                                                       keyboard_config.customer_keyboard(), 'customer', user)
                 print('Back to customer menu')
 
             elif (user.get_condition() == 'customer') & (message == 'создание процедуры'):
-                keyboard, user = body_request_message(id, 'Убедитесь, что Вы прошли все этапы: получение ЭЦП -> '
-                                                          'регистрация в ЕИС -> создание процедур',
+                keyboard, user = body_request_message(id, 'Перед созданием процедуры, убедитесь, что Вы: \n\n'
+                                                          '- получили ЭЦП'
+                                                          '\n- заререгистрировались в ЕИС',
                                                       keyboard_config.customer_layer_keyboard(),
                                                       'customer_ordered', user)
                 order_data.append(str(id))
@@ -153,7 +155,7 @@ for event in longpool.listen():
                 count, order_data = create_order(count, order_data, keyboard_config.back_to_the_customer_interface(), message)
                 if count == 0:
                     order_data.clear()
-                    keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
+                    keyboard, user = body_request_message(id, 'Отлично! \nВыберите интересующую категорию',
                                                           keyboard_config.back_to_the_customer_interface(), 'customer',
                                                           user)
                 print("Read data for order")
@@ -164,13 +166,13 @@ for event in longpool.listen():
 
             # Выбор роли поставщика
             elif (user.get_condition() == 'no_condition') & (message == 'я - поставщик'):
-                keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
+                keyboard, user = body_request_message(id, 'Отлично! \nВыберите интересующую категорию',
                                                       keyboard_config.customer_and_provider_keyboard(), 'provider', user)
                 print("Input into provider")
 
             # Выбор роли поставщика
             elif (user.get_condition() == 'provider') & (message in ['223-фз', '44-фз', 'фкр', 'рб']):
-                keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
+                keyboard, user = body_request_message(id, 'Подобрали для Вас:\n- торги\n- полезные услуги',
                                                       keyboard_config.provider_keyboard(), 'provider', user)
                 print("Input into provider")
 
@@ -200,7 +202,7 @@ for event in longpool.listen():
                     tmp += 1
                 keyboard.add_line()
                 keyboard.add_button('Вернуться в начало')
-                send_request_message(id, "Выберите интересующий Вас тендер", keyboard)
+                send_request_message(id, 'Выберите кнопку, соответствующую номеру тендера', keyboard)
                 print("Input into find tender")
 
             elif (user.get_condition() == 'founder') & (message == 'следующие'):
