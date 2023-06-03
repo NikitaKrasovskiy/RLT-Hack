@@ -7,7 +7,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhos
 app.app_context().push()
 db = SQLAlchemy(app)
 
+class OKVED(db.Model):
+    __tablename__ = "okved"
+    id = db.Column(db.Integer, primary_key=True)
+    id_format = db.Column(db.String)
+    link = db.Column(db.String)
 
+    def to_json_okved(self):
+        return {
+            'id': self.id,
+            'id_format': self.id_forma,
+            'link': self.link
+        }
 class Order(db.Model):
     __tablename__ = "orders"
     id = db.Column(db.Integer, primary_key=True)
