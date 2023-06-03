@@ -160,7 +160,7 @@ for event in longpool.listen():
                 # TODO
                 okved = OKVED()
                 test = okved.get_by_okved_name("1")
-                print(test)
+                print(test  ыфтьс фылс фыгсфыгсмымсщмсофЫС73к730красовсицлисиии)
                 # Из него берем первые 0-5 строк, через for отправляем сообщения
                 print("Input into find tender")
 
