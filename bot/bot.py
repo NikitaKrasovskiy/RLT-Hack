@@ -3,7 +3,8 @@ import keyboard_config
 import phrase_list
 from vk_api.longpoll import VkLongPoll, VkEventType
 from __class_user__ import User
-from database.main import Order
+from database.main import Order, OKVED
+import psycopg2
 import json
 
 
@@ -90,6 +91,7 @@ for event in longpool.listen():
                 start_dialog(id, keyboard)
                 print("start dialog with person")
 
+
             # Возврат в начальное меню
             elif message == 'вернуться в начало':
                 keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
@@ -155,6 +157,10 @@ for event in longpool.listen():
                 keyboard, user = body_request_message(id, 'Перечень торгов',
                                                       keyboard_config.back_to_the_provider_interface(), 'founder', user)
                 # Нужем метод, который возвращает строки из БД
+                # TODO
+                okved = OKVED()
+                test = okved.get_by_okved_name("1")
+                print(test)
                 # Из него берем первые 0-5 строк, через for отправляем сообщения
                 print("Input into find tender")
 
