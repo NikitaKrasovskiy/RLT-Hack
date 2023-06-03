@@ -96,7 +96,7 @@ for event in longpool.listen():
                 print("Back to the start menu")
 
             # Услуги РосЭлТорг
-            elif message == 'услуги':
+            elif message == 'что мне может понадобиться?':
                 keyboard, user = body_request_message(id, 'Выберите интересующую Вас услугу, предоставляемую Росэлторг',
                                                       keyboard_config.service_keyboard(), 'serviced', user)
                 print("Input into service menu")
@@ -108,6 +108,12 @@ for event in longpool.listen():
             # Выбор роли заказчика
             elif (user.get_condition() == 'no_condition') & (message == 'я - заказчик'):
                 keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
+                                                      keyboard_config.customer_and_provider_keyboard(), 'customer', user)
+                print("Input into customer!!!!!!!")
+
+            # Прослойка после заказчика
+            elif (user.get_condition() == 'customer') & (message in ['223-фз', '44-фз', 'фкр', 'рб']):
+                keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
                                                       keyboard_config.customer_keyboard(), 'customer', user)
                 print("Input into customer")
 
@@ -115,14 +121,23 @@ for event in longpool.listen():
             elif (user.get_condition() in ['customer', 'ordered']) & (message == 'вернуться в меню заказчика'):
                 keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
                                                       keyboard_config.customer_keyboard(), 'customer', user)
+                print('Back to customer menu')
 
-            # Выбор создания процедуры тендерных торгов в роли заказчика
             elif (user.get_condition() == 'customer') & (message == 'создание процедуры'):
-                keyboard, user = body_request_message(id, 'Введите наименование лота',
-                                                      keyboard_config.back_to_the_customer_interface(),
-                                                      'ordered', user)
+                keyboard, user = body_request_message(id, 'Убедитесь, что Вы прошли все этапы: получение ЭЦП -> '
+                                                          'регистрация в ЕИС -> создание процедур',
+                                                      keyboard_config.customer_layer_keyboard(),
+                                                      'customer_ordered', user)
                 order_data.append(str(id))
                 print("Input into customer")
+
+            # # Выбор создания процедуры тендерных торгов в роли заказчика
+            # elif (user.get_condition() == 'customer_ordered') & (message == 'создание процедуры'):
+            #     keyboard, user = body_request_message(id, 'Введите наименование лота',
+            #                                           keyboard_config.back_to_the_customer_interface(),
+            #                                           'ordered', user)
+            #     order_data.append(str(id))
+            #     print("Input into customer")
 
             # Чтение данных для занесения в БД данных о лоте
             elif user.get_condition() == 'ordered':
@@ -141,12 +156,28 @@ for event in longpool.listen():
             # Выбор роли поставщика
             elif (user.get_condition() == 'no_condition') & (message == 'я - поставщик'):
                 keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
+                                                      keyboard_config.customer_and_provider_keyboard(), 'provider', user)
+                print("Input into provider")
+
+            # Выбор роли поставщика
+            elif (user.get_condition() == 'provider') & (message in ['223-фз', '44-фз', 'фкр', 'рб']):
+                keyboard, user = body_request_message(id, 'Выберите интересующую Вас категорию',
                                                       keyboard_config.provider_keyboard(), 'provider', user)
                 print("Input into provider")
 
-            # Поиск торгов, выборка из 5-ти подходящих
+            # Поиск торгов по ОКВЭД, выборка из 5-ти первых
             elif (user.get_condition() == 'provider') & (message == 'поиск торгов'):
-                keyboard, user = body_request_message(id, 'Перечень торгов',
+                keyboard, user = body_request_message(id, 'Введите номер ОКВЭД',
+                                                      keyboard_config.five_buttons(), 'founder', user)
+                # Нужен метод, который возвращает строки из БД
+                # Из него берем первые 0-5 строк, через for отправляем сообщения
+                print("Input into find tender")
+
+            # Выборка из пяти первых заказов по коду ОКВЭД, кнопки инлайн
+            elif (user.get_condition() == 'founder') & (message in ['1', '2', '3', '4', '5']):
+                # Вызываю сущность, возвращающая мне json, забираю из него obj[message] в качестве названия отрасли
+                # После итерируюсь по obj[message] и вывожу keyboard.add_button_link
+                keyboard, user = body_request_message(id, 'Введите номер ОКВЭД',
                                                       keyboard_config.back_to_the_provider_interface(), 'founder', user)
                 # Нужен метод, который возвращает строки из БД
                 # Из него берем первые 0-5 строк, через for отправляем сообщения
@@ -197,6 +228,14 @@ for event in longpool.listen():
                 print("Input into newbie root/customer")
 
             elif (user.get_condition() == 'newbie') & (message == 'создание процедуры'):
+                keyboard, user = body_request_message(id, 'Убедитесь, что Вы прошли все этапы: получение ЭЦП -> '
+                                                          'регистрация в ЕИС -> создание процедур',
+                                                      keyboard_config.customer_layer_keyboard(),
+                                                      'newbie_ordered', user)
+                order_data.append(str(id))
+                print("Input into customer")
+
+            elif (user.get_condition() == 'newbie_ordered') & (message == 'создание процедуры'):
                 keyboard, user = body_request_message(id, 'Введите наименование лота',
                                                       keyboard_config.back_to_the_customer_interface(),
                                                       'newbie_ordered', user)

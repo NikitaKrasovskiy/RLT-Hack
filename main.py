@@ -1,36 +1,51 @@
-import hashlib
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+import psycopg2
+import json
 
-from pydantic import BaseModel
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
-from sqlalchemy import Column, Integer, String, Boolean
-import sqlite3
-
-# Database configuration
-SQLALCHEMY_DATABASE_URL = "sqlite:///./tests.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(bind=engine)
-Base = declarative_base()
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/db'
+app.app_context().push()
+db = SQLAlchemy(app)
 
 
-def create_database():
-    conn = sqlite3.connect(SQLALCHEMY_DATABASE_URL[10:])
-    cursor = conn.cursor()
-    conn.commit()
-    conn.close()
-
-
-# Database models
-class Order(Base):
+class Order(db.Model):
     __tablename__ = "orders"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True)
-    email = Column(String, unique=True, index=True)
-    password = Column(String)
-    is_active = Column(Boolean, default=True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    price = db.Column(db.String)
+    data = db.Column(db.String)
+    user_vk_id = db.Column(db.String)
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'data': self.data,
+            'user_vk_id': self.user_vk_id
+        }
 
-# API endpoints
-# Create database and tables if they do not exist
-create_database()
-Base.metadata.create_all(bind=engine)
+    def __init__(self, name, price, data, user_vk_id):
+        self.name = name
+        self.price = price
+        self.data = data
+        self.user_vk_id = user_vk_id
+
+    def test_fun(self, order_data):
+        name = order_data[1]
+        price = order_data[2]
+        data = order_data[3]
+        user_vk_id = int(order_data[0])
+
+        data = Order(name, price, data, user_vk_id)
+        db.session.add(data)
+        db.session.commit()
+
+    def select_orders_by_user_vk_id(self,user_vk_id):
+        orders = Order.query.filter_by(user_vk_id=user_vk_id).all()
+        orders_json = [order.to_json() for order in orders]
+        return orders_json
+        # db.session.refresh()
+
+        # def get order select * from orders As o where o.user_vk_id = inner.user_vk_id
