@@ -50,7 +50,8 @@ def create_order(step, data, vk_keyboard, msg):
     if step == 0:
         for i in data:
             print(i)
-        send_request_message(id, '\n'.join(data[1:]), vk_keyboard)
+        join_msg = ['Наименование: ' + data[1], 'Начальная цена: ' + data[2], 'Сроки: ' + data[3]]
+        send_request_message(id, '\n'.join(join_msg), vk_keyboard)
     return step, data
 
 
@@ -84,7 +85,7 @@ for event in longpool.listen():
             id = event.user_id
 
             # Первый этап в чат боте
-            if (user.get_condition() == 'no_condition') & (message == 'начать'):
+            if (user.get_condition() == 'no_condition') & (message in ['начать', 'start']):
                 start_dialog(id, keyboard)
                 print("start dialog with person")
 
@@ -133,9 +134,9 @@ for event in longpool.listen():
                                                           user)
                 print("Read data for order")
 
-            # ---------------------------------------------------------------------------------------
-            #   Обработка работы с пользователем в роли поставщика
-            # ---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
+#   Обработка работы с пользователем в роли поставщика
+# ---------------------------------------------------------------------------------------
 
             # Выбор роли поставщика
             elif (user.get_condition() == 'no_condition') & (message == 'я - поставщик'):
@@ -147,7 +148,7 @@ for event in longpool.listen():
             elif (user.get_condition() == 'provider') & (message == 'поиск торгов'):
                 keyboard, user = body_request_message(id, 'Перечень торгов',
                                                       keyboard_config.back_to_the_provider_interface(), 'founder', user)
-                # Нужем метод, который возвращает строки из БД
+                # Нужен метод, который возвращает строки из БД
                 # Из него берем первые 0-5 строк, через for отправляем сообщения
                 print("Input into find tender")
 
@@ -155,7 +156,7 @@ for event in longpool.listen():
                 keyboard, user = body_request_message(id, 'Перечень торгов',
                                                       keyboard_config.back_to_the_provider_interface(),
                                                       'founder', user)
-                # Нужем метод, который возвращает строки из БД
+                # Нужен метод, который возвращает строки из БД
                 # Из него берем следующие 0-5 строк, через for отправляем сообщения
                 # cout увеличиваем на 1
                 print("Input into trade list")
@@ -205,7 +206,7 @@ for event in longpool.listen():
             elif (user.get_condition() == 'newbie') & (message == 'вернуться в меню заказчика'):
                 keyboard, user = body_request_message(id, phrase_list.newbie_customer_phrase,
                                                       keyboard_config.customer_keyboard(), 'newbie', user)
-                
+
             elif user.get_condition() == 'newbie_ordered':
                 count, order_data = create_order(count, order_data, keyboard_config.back_to_the_customer_interface(), message)
                 if count == 0:

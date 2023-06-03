@@ -106,7 +106,7 @@ def newbie_keyboard():
     keyboard.add_line()
     keyboard.add_button('Пройти курс', VkKeyboardColor.PRIMARY)
     keyboard.add_line()
-    keyboard.add_openlink_button('Чат для новичков', 'http://example.com/')
+    keyboard.add_openlink_button('Чат для новичков', 'https://vk.me/join/AJQ1d6sx1yf5Hi7v8jkHzLuB')
     keyboard.add_line()
     keyboard.add_button('Вернуться в начало')
     return keyboard
