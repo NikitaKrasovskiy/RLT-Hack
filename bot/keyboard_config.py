@@ -117,9 +117,9 @@ def newbie_learning_courses():
     keyboard = VkKeyboard()
     keyboard.add_openlink_button('Обучающие курсы', 'https://www.roseltorg.ru/education')
     keyboard.add_line()
-    keyboard.add_openlink_button('Вконтакте', 'http://example.com/')
+    keyboard.add_openlink_button('Вконтакте', 'https://vk.com/video?q=%D1%80%D0%BE%D1%81%D1%8D%D0%BB%D1%82%D0%BE%D1%80%D0%B3')
     keyboard.add_line()
-    keyboard.add_openlink_button('YouTube', 'http://example.com/')
+    keyboard.add_openlink_button('YouTube', 'https://www.youtube.com/channel/UCIONXxV4Tz3l88RogP_enuQ')
     keyboard.add_line()
     keyboard.add_button('Вернуться в начало')
     return keyboard
