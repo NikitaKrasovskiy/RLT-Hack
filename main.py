@@ -4,9 +4,29 @@ import psycopg2
 import json
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:wassa456@localhost/db'
 app.app_context().push()
 db = SQLAlchemy(app)
+
+class OKVED(db.Model):
+    __tablename__ = "okveds"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    id_format = db.Column(db.String)
+    link = db.Column(db.String)
+
+    def to_json_okved(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'id_format': self.id_format,
+            'link': self.link
+        }
+
+    def get_by_okved_name(self, name_other):
+        okveds = OKVED.query.filter_by(name=str(name_other)).all()
+        okved_json = [okved.to_json_okved() for okved in okveds]
+        return okved_json
 
 
 class Order(db.Model):

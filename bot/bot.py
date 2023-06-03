@@ -2,7 +2,9 @@ import vk_api
 import keyboard_config
 import phrase_list
 from vk_api.longpoll import VkLongPoll, VkEventType
+from vk_api.keyboard import VkKeyboard
 from __class_user__ import User
+from main import OKVED, Order
 
 
 # BASIC METHODS
@@ -100,6 +102,13 @@ for event in longpool.listen():
                 keyboard, user = body_request_message(id, 'Выберите интересующую Вас услугу, предоставляемую Росэлторг',
                                                       keyboard_config.service_keyboard(), 'serviced', user)
                 print("Input into service menu")
+            elif (message == 'банковские операции') & (user.get_condition() == 'serviced'):
+                keyboard, user = body_request_message(id, 'Выберите интересующую Вас услугу, предоставляемую Росэлторг',
+                                                      keyboard_config.banking_keyboard(), 'serviced', user)
+
+            elif (message == 'сопровождение') & (user.get_condition() == 'serviced'):
+                keyboard, user = body_request_message(id, 'Выберите интересующую Вас услугу, предоставляемую Росэлторг',
+                                                      keyboard_config.escort_keyboard(), 'serviced', user)
 
 # ---------------------------------------------------------------------------------------
 #   Обработка работы с пользователем в роли заказчика
@@ -167,7 +176,7 @@ for event in longpool.listen():
 
             # Поиск торгов по ОКВЭД, выборка из 5-ти первых
             elif (user.get_condition() == 'provider') & (message == 'поиск торгов'):
-                keyboard, user = body_request_message(id, 'Введите номер ОКВЭД',
+                keyboard, user = body_request_message(id, 'Выберите код ОКВЭД',
                                                       keyboard_config.five_buttons(), 'founder', user)
                 # Нужен метод, который возвращает строки из БД
                 # Из него берем первые 0-5 строк, через for отправляем сообщения
@@ -177,10 +186,21 @@ for event in longpool.listen():
             elif (user.get_condition() == 'founder') & (message in ['1', '2', '3', '4', '5']):
                 # Вызываю сущность, возвращающая мне json, забираю из него obj[message] в качестве названия отрасли
                 # После итерируюсь по obj[message] и вывожу keyboard.add_button_link
-                keyboard, user = body_request_message(id, 'Введите номер ОКВЭД',
+                obj = OKVED()
+                json_parce = obj.get_by_okved_name(message)
+                keyboard, user = body_request_message(id, f"Вы выбрали {phrase_list.industry[message]}",
                                                       keyboard_config.back_to_the_provider_interface(), 'founder', user)
-                # Нужен метод, который возвращает строки из БД
-                # Из него берем первые 0-5 строк, через for отправляем сообщения
+                keyboard = VkKeyboard()
+                keyboard.add_openlink_button("Открыть торги на сайте", 'https://www.roseltorg.ru/procedures/search?sale=0&status%5B%5D=5&status%5B%5D=0&currency=all')
+                tmp = 1
+                for it in json_parce:
+                    send_request_message(id, str(tmp) + '. ' + it['id_format'] + '\n', keyboard)
+                    keyboard.add_line()
+                    keyboard.add_openlink_button(str(tmp), it["link"])
+                    tmp += 1
+                keyboard.add_line()
+                keyboard.add_button('Вернуться в начало')
+                send_request_message(id, "Выберите интересующий Вас тендер", keyboard)
                 print("Input into find tender")
 
             elif (user.get_condition() == 'founder') & (message == 'следующие'):

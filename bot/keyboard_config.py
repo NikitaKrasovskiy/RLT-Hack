@@ -75,29 +75,54 @@ def back_to_the_provider_interface():
 # Предложение услуг
 def service_keyboard():
     keyboard = VkKeyboard()
+    keyboard.add_button('Банковские операции')
+    keyboard.add_button('Сопровождение')
+    keyboard.add_line()
     keyboard.add_openlink_button('Электронные подписи', 'https://www.roseltorg.ru/ecp')
     keyboard.add_line()
-    keyboard.add_openlink_button('Кредит на исполнение контракта', 'https://www.roseltorg.ru/credit-execution-contract')
-    keyboard.add_openlink_button('Помощь в регистрации', 'https://www.roseltorg.ru/speed')
-    keyboard.add_line()
     keyboard.add_openlink_button('Комплаенс проверка', 'https://www.roseltorg.ru/compliance')
-    keyboard.add_openlink_button('Банковские гарантии', 'https://www.roseltorg.ru/bg')
     keyboard.add_line()
-    keyboard.add_openlink_button('Сопровождение на торгах', 'https://www.roseltorg.ru/realty-support')
-    keyboard.add_openlink_button('Экспертиза тендерной заявки', 'https://www.roseltorg.ru/bid')
-    keyboard.add_line()
-    keyboard.add_openlink_button('Обучающий центр', 'https://www.roseltorg.ru/education')
-    keyboard.add_openlink_button('Специальные счета', 'https://www.roseltorg.ru/specschet')
+    keyboard.add_openlink_button('Кредит на исполнение контракта', 'https://www.roseltorg.ru/credit-execution-contract')
     keyboard.add_line()
     keyboard.add_openlink_button('ЭДО \"Росинвойс\"', 'https://www.roseltorg.ru/edo')
+    keyboard.add_line()
     keyboard.add_openlink_button('Центр импортозамещения', 'https://www.roseltorg.ru/import')
     keyboard.add_line()
     keyboard.add_openlink_button('Сертификация продукции', 'https://www.roseltorg.ru/certification-center')
+    keyboard.add_line()
     keyboard.add_openlink_button('Страхование СМР', 'https://www.roseltorg.ru/insurance-fkr')
+    keyboard.add_line()
+    keyboard.add_openlink_button("Чат поддержки", 'https://t.me/RoseltorgCPP_bot')
     keyboard.add_line()
     keyboard.add_button('Вернуться в начало')
     return keyboard
 
+
+def banking_keyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_openlink_button('Кредит на исполнение контракта', 'https://www.roseltorg.ru/credit-execution-contract')
+    keyboard.add_line()
+    keyboard.add_openlink_button('Ипотечные продукты', 'https://www.roseltorg.ru/credit-execution-contract')
+    keyboard.add_line()
+    keyboard.add_openlink_button('Банковские гарантии', 'https://www.roseltorg.ru/bg')
+    keyboard.add_line()
+    keyboard.add_openlink_button('Специальные счета', 'https://www.roseltorg.ru/specschet')
+    keyboard.add_line()
+    keyboard.add_button('Вернуться в начало')
+    return keyboard
+
+def escort_keyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_openlink_button('Обучающий центр', 'https://www.roseltorg.ru/education')
+    keyboard.add_line()
+    keyboard.add_openlink_button('Сопровождение на торгах', 'https://www.roseltorg.ru/realty-support')
+    keyboard.add_line()
+    keyboard.add_openlink_button('Помощь в регистрации', 'https://www.roseltorg.ru/speed')
+    keyboard.add_line()
+    keyboard.add_openlink_button('Экспертиза тендерной заявки', 'https://www.roseltorg.ru/bid')
+    keyboard.add_line()
+    keyboard.add_button('Вернуться в начало')
+    return keyboard
 
 # Клавиатура новичка, пробующего разные роли
 def newbie_keyboard():
