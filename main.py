@@ -14,17 +14,23 @@ class OKVED(db.Model):
     name = db.Column(db.String)
     id_format = db.Column(db.String)
     link = db.Column(db.String)
+    procedure = db.Column(db.String)
 
     def to_json_okved(self):
         return {
             'id': self.id,
             'name': self.name,
             'id_format': self.id_format,
-            'link': self.link
+            'link': self.link,
+            'procedure': self.procedure
         }
-
     def get_by_okved_name(self, name_other):
         okveds = OKVED.query.filter_by(name=str(name_other)).all()
+        okved_json = [okved.to_json_okved() for okved in okveds]
+        return okved_json
+
+    def get_by_all(self):
+        okveds = OKVED.query.filter_by().all()
         okved_json = [okved.to_json_okved() for okved in okveds]
         return okved_json
 

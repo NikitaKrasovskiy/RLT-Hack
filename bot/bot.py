@@ -176,6 +176,37 @@ for event in longpool.listen():
                                                       keyboard_config.provider_keyboard(), 'provider', user)
                 print("Input into provider")
 
+########################
+            elif (user.get_condition() == 'provider') & (message == 'поиск по процедуре'):
+                keyboard, user = body_request_message(id, 'Введите номер процедуры', keyboard_config.back_to_the_provider_interface(), 'found_by_process', user)
+
+            elif user.get_condition() == 'found_by_process':
+                obj = OKVED()
+                json_parce = obj.get_by_all()
+                for it in json_parce:
+                    if message == it["procedure"]:
+                        send_request_message(id, "Найдено совпадение:\n" + str(it), keyboard_config.back_to_the_provider_interface())
+                        break
+                else:
+                    send_request_message(id, "Cовпадений не найдено: ",
+                                         keyboard_config.back_to_the_provider_interface())
+                user.change_condition('founder')
+
+            elif (user.get_condition() == 'provider') & (message == 'поиск по наименованию'):
+                keyboard, user = body_request_message(id, 'Введите наименование', keyboard_config.back_to_the_provider_interface(), 'found_by_name', user)
+
+            elif user.get_condition() == 'found_by_name':
+                obj = OKVED()
+                json_parce = obj.get_by_all()
+                for it in json_parce:
+                    if message == it['id_format'].lower():
+                        send_request_message(id, "Найдено совпадение:\n" + str(it), keyboard_config.back_to_the_provider_interface())
+                        break
+                else:
+                    send_request_message(id, "Cовпадений не найдено",
+                                         keyboard_config.back_to_the_provider_interface())
+                user.change_condition('founder')
+###################
             # Поиск торгов по ОКВЭД, выборка из 5-ти первых
             elif (user.get_condition() == 'provider') & (message == 'поиск торгов'):
                 keyboard, user = body_request_message(id, 'Выберите код ОКВЭД',
